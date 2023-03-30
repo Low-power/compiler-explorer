@@ -25,6 +25,7 @@
 
 define(function (require) {
     var $ = require('jquery');
+    var _ = require("underscore");
 
     function Alert() {
         this.yesHandler = null;
