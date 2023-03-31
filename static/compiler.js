@@ -730,6 +730,7 @@ define(function (require) {
         // Disable any of the options which don't make sense in binary mode.
         var filtersDisabled = !!filters.binary && !this.compiler.supportsFiltersInBinary;
         this.domRoot.find('.nonbinary').toggleClass('disabled', filtersDisabled);
+        this.domRoot.find(".binary").toggleClass("disabled", !filters.binary);
         // If its already open, we should turn the it off.
         // The pane will update with error text
         // Other wise we just disable the button.
