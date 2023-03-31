@@ -41,7 +41,7 @@ var nopt = require('nopt'),
     express = require('express'),
     logger = require('./lib/logger').logger;
 
-// Parse arguments from command line 'node ./app.js args...'
+// Parse arguments from command line 'node app.js args...'
 var opts = nopt({
     'env': [String, Array],
     'rootDir': [String],
@@ -196,6 +196,7 @@ function ClientOptionsHandler(fileSources) {
     }));
     var supportsBinary = !!compilerProps("supportsBinary", true);
     var supportsExecute = supportsBinary && !!compilerProps("supportsExecute", true);
+    var supportsIntelAsm = !!compilerProps("supportsIntelAsm", false);
     var libs = {};
 
     var baseLibs = compilerProps("libs");
@@ -240,6 +241,7 @@ function ClientOptionsHandler(fileSources) {
         compileOptions: compilerProps('defaultOptions', ''),
         supportsBinary: supportsBinary,
         supportsExecute: supportsExecute,
+        supportsIntelAsm:supportsIntelAsm,
         languages: languages,
         sources: sources,
         raven: gccProps('ravenUrl', ''),
@@ -401,6 +403,7 @@ function findCompilers() {
 
         var supportsBinary = !!props("supportsBinary", true);
         var supportsExecute = supportsBinary && !!props("supportsExecute", true);
+        var supportsIntelAsm = !!props("supportsIntelAsm", false);
         var compilerInfo = {
             id: name,
             exe: exe,
@@ -416,6 +419,7 @@ function findCompilers() {
             needsMulti: !!props("needsMulti", true),
             supportsBinary: supportsBinary,
             supportsExecute: supportsExecute,
+            supportsIntelAsm:supportsIntelAsm,
             postProcess: props("postProcess", "").split("|")
         };
         logger.info("Found compiler", compilerInfo);

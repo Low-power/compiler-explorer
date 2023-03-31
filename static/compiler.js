@@ -461,6 +461,11 @@ define(function (require) {
         if (filters.execute && !this.compiler.supportsExecute) {
             delete filters.execute;
         }
+/*
+        if (filters.intel && !this.compiler.supportsIntelAsm) {
+            delete filters.intel;
+        }
+*/
         return filters;
     };
 
@@ -714,9 +719,8 @@ define(function (require) {
     Compiler.prototype.updateButtons = function () {
         if (!this.compiler) return;
         var filters = this.getEffectiveFilters();
-        // We can support intel output if the compiler supports it, or if we're compiling
-        // to binary (as we can disassemble it however we like).
-        var intelAsm = this.compiler.supportsIntel || filters.binary;
+        // We can support intel output if the compiler supports it.
+        var intelAsm = this.compiler.supportsIntelAsm;
         this.domRoot.find('[data-bind=\'intel\']').toggleClass('disabled', !intelAsm);
         // Disable binary support on compilers that don't work with it.
         this.domRoot.find('[data-bind=\'binary\']')
