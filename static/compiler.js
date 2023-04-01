@@ -131,8 +131,8 @@ define(function (require) {
             .on('keyup', optionsChange);
 
         // Hide the binary option if the global options has it disabled.
-        this.domRoot.find('[data-bind=\'binary\']').toggle(options.supportsBinary);
-        this.domRoot.find('[data-bind=\'execute\']').toggle(options.supportsExecute);
+        this.domRoot.find("[data-bind='binary']").css("visibility", options.supportsBinary ? "visible" : "hidden");
+        this.domRoot.find("[data-bind='execute']").css("visibility", options.supportsExecute ? "visible" : "hidden");
 
         this.outputEditor = monaco.editor.create(this.domRoot.find('.monaco-placeholder')[0], {
             scrollBeyondLastLine: false,
@@ -458,10 +458,10 @@ define(function (require) {
         if (filters.binary && !this.compiler.supportsBinary) {
             delete filters.binary;
         }
+/*
         if (filters.execute && !this.compiler.supportsExecute) {
             delete filters.execute;
         }
-/*
         if (filters.intel && !this.compiler.supportsIntelAsm) {
             delete filters.intel;
         }
@@ -720,17 +720,21 @@ define(function (require) {
         if (!this.compiler) return;
         var filters = this.getEffectiveFilters();
         // We can support intel output if the compiler supports it.
-        var intelAsm = this.compiler.supportsIntelAsm;
-        this.domRoot.find('[data-bind=\'intel\']').toggleClass('disabled', !intelAsm);
+        var elements = this.domRoot.find("[data-bind='intel']");
+        elements.toggleClass("disabled", !this.compiler.supportsIntelAsm);
+        elements.css("visibility", this.compiler.supportsIntelAsm ? "visible" : "hidden");
         // Disable binary support on compilers that don't work with it.
-        this.domRoot.find('[data-bind=\'binary\']')
-            .toggleClass('disabled', !this.compiler.supportsBinary);
-        this.domRoot.find('[data-bind=\'execute\']')
-            .toggleClass('disabled', !this.compiler.supportsExecute);
+        elements = this.domRoot.find("[data-bind='binary']");
+        elements.toggleClass("disabled", !this.compiler.supportsBinary);
+        elements.css("visibility", this.compiler.supportsBinary ? "visible" : "hidden");
+        elements = this.domRoot.find("[data-bind='execute']");
+        var exec_supported = this.compiler.supportsExecute && filters.binary && filters.link;
+        elements.toggleClass("disabled", !exec_supported);
+        elements.css("visibility", exec_supported ? "visible" : "hidden");
         // Hide any of the options which don't make sense in binary mode.
         var filtersDisabled = !!filters.binary && !this.compiler.supportsFiltersInBinary;
-        var elements = this.domRoot.find(".nonbinary");
-        elements.toggleClass('disabled', filtersDisabled);
+        elements = this.domRoot.find(".nonbinary");
+        elements.toggleClass("disabled", filtersDisabled);
         elements.css("visibility", filtersDisabled ? "hidden" : "visible");
         elements = this.domRoot.find(".binary")
         elements.toggleClass("disabled", !filters.binary);
