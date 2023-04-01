@@ -118,10 +118,10 @@ define(function (require) {
 				folding: true,
 				lineNumbersMinChars: options.embedded ? 1 : 3,
 				emptySelectionClipboard:false,
-				tabSize: this.settings.tabWidth,
 				autoIndent:false,
 				formatOnPaste:false
 			});
+        this.editor.getModel().updateOptions({tabSize:this.settings.tabWidth});
 
         var startFolded = /^[/*#;]+\s*setup.*/;
         if (state.source && state.source.match(startFolded)) {
@@ -354,13 +354,13 @@ define(function (require) {
 
         this.editor.updateOptions({
             autoClosingBrackets: this.settings.autoCloseBrackets,
-            tabSize: this.settings.tabWidth,
             quickSuggestions: this.settings.showQuickSuggestions,
             contextmenu: this.settings.useCustomContextMenu,
             minimap: {
                 enabled: this.settings.showMinimap && !options.embedded
             }
         });
+        this.editor.getModel().updateOptions({tabSize:this.settings.tabWidth});
 
         // TODO: bug when:
         // * Turn off auto.
