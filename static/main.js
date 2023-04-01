@@ -39,7 +39,7 @@ require.config({
         'raven-js': 'ext/raven-js/dist/raven',
         'es6-promise': 'ext/es6-promise/es6-promise',
         'lru-cache': 'ext/lru-cache/lib/lru-cache',
-        vs: "ext/monaco-editor/min/vs",
+        vs:"ext/monaco-editor/dev/vs",
         'bootstrap-slider': 'ext/seiyria-bootstrap-slider/dist/bootstrap-slider',
         filesaver: 'ext/file-saver/FileSaver',
         vis: 'ext/vis/dist/vis.min'

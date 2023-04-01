@@ -106,22 +106,22 @@ define(function (require) {
         var root = this.domRoot.find(".monaco-placeholder");
         var legacyReadOnly = state.options && !!state.options.readOnly;
         this.editor = monaco.editor.create(root[0], {
-            value: state.source || defaultSrc || "",
-            scrollBeyondLastLine: false,
-            language: cmMode,
-            fontFamily: 'Fira Mono',
-            readOnly: !!options.readOnly || legacyReadOnly,
-            glyphMargin: !options.embedded,
-            quickSuggestions: false,
-            fixedOverflowWidgets: true,
-            minimap: {
-                maxColumn: 80
-            },
-            folding: true,
-            lineNumbersMinChars: options.embedded ? 1 : 3,
-            emptySelectionClipboard: true,
-            autoIndent: true,
-        });
+				value: state.source || defaultSrc || "",
+				scrollBeyondLastLine: false,
+				language: cmMode,
+				fontFamily:"Fira Mono",
+				readOnly: !!options.readOnly || legacyReadOnly,
+				glyphMargin: !options.embedded,
+				quickSuggestions: false,
+				fixedOverflowWidgets: true,
+				minimap:{ maxColumn:80 },
+				folding: true,
+				lineNumbersMinChars: options.embedded ? 1 : 3,
+				emptySelectionClipboard:false,
+				tabSize: this.settings.tabWidth,
+				autoIndent:false,
+				formatOnPaste:false
+			});
 
         var startFolded = /^[/*#;]+\s*setup.*/;
         if (state.source && state.source.match(startFolded)) {
