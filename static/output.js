@@ -58,7 +58,13 @@ define(function (require) {
             this.add(obj.text, obj.tag ? obj.tag.line : obj.line);
         }, this);
 
-        this.add("Compiler exited with result code " + result.code);
+        if(result.code) {
+			this.add("Failed to launch compiler due to " + result.code);
+        } else if(result.signal) {
+			this.add("Compiler terminated by " + result.signal);
+        } else {
+			this.add("Compiler exited with status " + String(result.status));
+        }
 
         if (result.execResult) {
             var elem = $('<div><hr></div>').appendTo(this.contentRoot);
@@ -66,8 +72,10 @@ define(function (require) {
             _.each((result.execResult.stdout || []).concat(result.execResult.stderr || []), function (obj) {
                 this.add(obj.text, obj.line);
             }, this);
-            this.add("User code exited with result code " + result.execResult.code);
-        }
+			this.add(result.execResult.signal ?
+				"User code terminated by " + result.execResult.signal :
+				"User code exited with status " + String(result.execResult.status));
+        };
 
         this.updateCompilerName();
     };
