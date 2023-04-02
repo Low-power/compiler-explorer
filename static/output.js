@@ -59,7 +59,7 @@ define(function (require) {
         }, this);
 
         if(result.code) {
-			this.add("Failed to launch compiler due to " + result.code);
+			this.add("Failed to launch compiler: " + result.code);
         } else if(result.signal) {
 			this.add("Compiler terminated by " + result.signal);
         } else {

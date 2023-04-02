@@ -492,7 +492,7 @@ define(function (require) {
                 options: options
             };
             if (!this.compiler) {
-                this.onCompileResponse(request, errorResult('<Please select a compiler>'), false);
+                this.onCompileResponse(request, errorResult("<Please select a compiler>", "ENOSYS"), false);
             } else {
                 this.sendCompile(request);
             }
@@ -522,8 +522,10 @@ define(function (require) {
             })
             .catch(function (x) {
                 clearTimeout(progress);
-                onCompilerResponse(request, errorResult('<Remote compilation failed: ' + x.error + '>'), false);
-            });
+					onCompilerResponse(request,
+						errorResult("<Remote compilation failed: " + x.error + ">", "EIO"),
+						false);
+				});
     };
 
     Compiler.prototype.getBinaryForLine = function (line) {
@@ -583,8 +585,9 @@ define(function (require) {
         }
     };
 
-    function errorResult(text) {
-        return {asm: fakeAsm(text), code: -1, stdout: '', stderr: ''};
+    function errorResult(text, code) {
+        //return {asm: fakeAsm(text), code:code, status:-1, stdout: '', stderr: ''};
+		return {asm:fakeAsm(text), code:text, status:-1, stdout:null, stderr:null};
     }
 
     function fakeAsm(text) {
