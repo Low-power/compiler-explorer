@@ -121,7 +121,9 @@ define(function (require) {
 				autoIndent:false,
 				formatOnPaste:false
 			});
-        this.editor.getModel().updateOptions({tabSize:this.settings.tabWidth});
+        this.editor.getModel().updateOptions({
+				insertSpaces:false, tabSize:this.settings.tabWidth
+			});
 
         var startFolded = /^[/*#;]+\s*setup.*/;
         if (state.source && state.source.match(startFolded)) {
