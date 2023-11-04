@@ -57,6 +57,9 @@ var opts = nopt({
     'wsl': [Boolean]
 });
 
+process.stdout.on("error", function() {});
+process.stderr.on("error", function() {});
+
 if (opts.debug) logger.level = 'debug';
 
 // AP: Detect if we're running under Windows Subsystem for Linux. Temporary modification
