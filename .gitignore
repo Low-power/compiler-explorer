@@ -5,6 +5,6 @@
 *.vscode
 /out
 *.heapsnapshot
-etc/config/*.local.properties
+/config/*.local.properties
 /nbproject
 /package-lock.json

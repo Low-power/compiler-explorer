@@ -44,18 +44,24 @@ var nopt = require('nopt'),
 // Parse arguments from command line 'node app.js args...'
 var opts = nopt({
     'env': [String, Array],
-    'rootDir': [String],
+    "prefix":[String],
     'language': [String],
     'host': [String],
     'port': [Number],
-    'propDebug': [Boolean],
+    "debug-properties":[Boolean],
     'debug': [Boolean],
     'static': [String],
-    'archivedVersions': [String],
-    'noRemoteFetch': [Boolean],
-    'tmpDir': [String],
+    "archived-versions":[String],
     'wsl': [Boolean]
 });
+
+var StringStartsWith = function(s, sub) {
+	if(s.length < sub.length) return false;
+	for(var i=0; i<sub.length; i++) {
+		if(s[i] != sub[i]) return false;
+	}
+	return true;
+}
 
 process.stdout.on("error", function() {});
 process.stderr.on("error", function() {});
@@ -64,25 +70,26 @@ if (opts.debug) logger.level = 'debug';
 
 // AP: Detect if we're running under Windows Subsystem for Linux. Temporary modification
 // of process.env is allowed: https://nodejs.org/api/process.html#process_process_env
-if ((child_process.execSync('uname -a').toString().indexOf('Microsoft') > -1) && (opts.wsl))
+var kernal_name_and_release = child_process.execFileSync("uname", ["-sr"]).toString();
+if (StringStartsWith(kernal_name_and_release, "Linux ") && kernal_name_and_release.indexOf("Microsoft") > 6 && opts.wsl) {
     process.env.wsl = true;
+}
 
-// AP: Allow setting of tmpDir (used in lib/base-compiler.js & lib/exec.js) through
-// opts. WSL requires a tmpDir as it can't see Linux volumes so set default to c:\tmp.
-if (opts.tmpDir)
-    process.env.tmpDir = opts.tmpDir;
-else if (process.env.wsl)
-    process.env.tmpDir = "/mnt/c/tmp";
+// WSL requires a different TMPDIR as Windows subsystem can't see Linux
+// volumes so set default to c:\tmp.
+if(typeof process.env.TMPDIR === "undefined" && process.env.wsl) {
+    process.env.TMPDIR = "/mnt/c/tmp";
+}
 
 
 // Set default values for omitted arguments
-var rootDir = opts.rootDir || './etc';
+var prefix = opts.prefix || ".";
 var language = opts.language || "C++";
 var env = opts.env || ['dev'];
 var hostname = opts.host;
 var port = opts.port || 10240;
 var staticDir = opts.static || 'static';
-var archivedVersions = opts.archivedVersions;
+var archivedVersions = opts["archived-versions"];
 var gitReleaseName = "";
 var versionedRootPrefix = "";
 // Use the canned git_hash if provided
@@ -93,8 +100,9 @@ if (opts.static && fs.existsSync(opts.static + "/git_hash")) {
 }
 if (opts.static && fs.existsSync(opts.static + '/v/' + gitReleaseName))
     versionedRootPrefix = "v/" + gitReleaseName + "/";
-// Don't treat @ in paths as remote adresses
-var fetchCompilersFromRemote = !opts.noRemoteFetch;
+
+// Whether to treat @ in paths as remote addresses
+var fetchCompilersFromRemote = true;
 
 var propHierarchy = _.flatten([
     'defaults',
@@ -109,10 +117,10 @@ var propHierarchy = _.flatten([
 logger.info("properties hierarchy: " + propHierarchy.join(', '));
 
 // Propagate debug mode if need be
-if (opts.propDebug) props.setDebug(true);
+if (opts["debug-properties"]) props.setDebug(true);
 
 // *All* files in config dir are parsed 
-props.initialize(rootDir + '/config', propHierarchy);
+props.initialize(prefix + "/config", propHierarchy);
 
 // Now load up our libraries.
 var CompileHandler = require('./lib/compile-handler').CompileHandler,
